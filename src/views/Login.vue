@@ -42,14 +42,18 @@ export default {
   methods: {
     login() {
       if(this.input.username != "" && this.input.password != "") {
-        var encryptedPass = this.CryptoJS.MD5(this.input.password)
         this.$http.get('http://localhost:8080/getuser?username='+this.input.username)
               .then((res) => {
                   this.info = 'Account Not Found!',
                   alert('Account Not Found!');
                   return res
               }).catch((res) => {
-                  this.$http.get('http://localhost:8080/login?username='+this.input.username+'&password='+encryptedPass)
+                var username = this.input.username;
+                var password = this.input.password;
+                  this.$http.post('http://localhost:8080/login',{
+                    username,
+                    password,
+                  })
                   .then((res) => {
                       this.info = 'Login Success! :D',
                       alert('Login Success!');

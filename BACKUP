@@ -47,30 +47,34 @@ export default {
   methods:{
     register(){
       if(this.input.username !='' && this.input.password !='' && this.input.repassword !=''){
-        if(this.input.password == this.input.repassword){
-          const encryptedPass = this.CryptoJS.AES.encrypt(this.input.password, "Secret Passphrase").toString()
-          this.$http.get('http://localhost:3000'+'/getuser?username='+this.input.username)
-            .then((response) => {
-                this.$http.post('http://localhost:3000'+'/register?username='+this.input.username+'&password='+encryptedPass) //this.$http = axios
-                .then(
-                  alert('Registration Success!'),
-                  this.info = 'Thank You! :D',
+        if(this.input.password.length >= 6){
+            if(this.input.password == this.input.repassword){
+            var encryptedPass = this.CryptoJS.MD5(this.input.password)
+            this.$http.get('http://localhost:8080'+'/getuser?username='+this.input.username)
+              .then((response) => {
+                  this.$http.post('http://localhost:8080'+'/register?username='+this.input.username+'&password='+encryptedPass) //this.$http = axios
+                  .then(
+                    alert('Registration Success!'),
+                    this.info = 'Thank You! :D',
+                    this.input.username = '',
+                    this.input.password = '',
+                    this.input.repassword = '',
+                  )
+                  return response
+              }).catch((error) => {
+                  alert('Username Taken!'),
+                  this.info = 'Username Taken! :(',
                   this.input.username = '',
                   this.input.password = '',
                   this.input.repassword = '',
-                )
-                return response
-            }).catch((error) => {
-                alert('Username Taken!'),
-                this.info = 'Username Taken! :(',
-                this.input.username = '',
-                this.input.password = '',
-                this.input.repassword = '',
-                console.warn('Not good man :(');
-                return error
-            })
+                  console.warn('Not good man :(');
+                  return error
+              })
+          }else{
+            alert('Password Did Not Match')
+          }
         }else{
-          alert('Password Did Not Match')
+          alert('Password Must Be 6 Characters or More!')
         }
       }else{
         alert('Field Cannot Be Empty :(')

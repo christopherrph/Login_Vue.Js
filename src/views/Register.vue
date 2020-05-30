@@ -49,10 +49,14 @@ export default {
       if(this.input.username !='' && this.input.password !='' && this.input.repassword !=''){
         if(this.input.password.length >= 6){
             if(this.input.password == this.input.repassword){
-            var encryptedPass = this.CryptoJS.MD5(this.input.password)
             this.$http.get('http://localhost:8080'+'/getuser?username='+this.input.username)
               .then((response) => {
-                  this.$http.post('http://localhost:8080'+'/register?username='+this.input.username+'&password='+encryptedPass) //this.$http = axios
+                var username = this.input.username;
+                var password = this.input.password;
+                  this.$http.post('http://localhost:8080/register',{
+                    username,
+                    password,
+                   }) //this.$http = axios
                   .then(
                     alert('Registration Success!'),
                     this.info = 'Thank You! :D',
